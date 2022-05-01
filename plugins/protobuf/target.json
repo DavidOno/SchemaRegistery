@@ -1,0 +1,51 @@
+{
+  "name": "example",
+  "components": [{
+  "object": {
+    "name": "Person",
+    "fields": [{
+      "name": "name",
+     "optional": "false",
+      "type": "string"
+    },{
+      "name": "id",
+     "optional": "false",
+      "type": "int32"
+    },
+    {
+      "name": "email",
+      "optional": "true",
+      "type": "string"
+    },{
+      "name": "phones",
+     "optional": "false",
+      "type": "object",
+      "typeRef": "PhoneNumber",
+      "minCardinality": "0",
+      "maxCardinality": "*"
+    }]
+  }
+},{
+   "object": {
+     "embracingType": "Person",
+      "name": "PhoneNumber",
+     "fields": [
+       {
+         "name": "number",
+         "type": "string"
+       },{
+         "name": "type",
+         "type": "enum",
+         "typeRef": "PhoneType",
+         "default": "HOME"
+       }
+     ]
+   }
+},{
+    "enum": {
+      "name": "PhoneType",
+      "values": ["mobile", "home"]
+    }
+}]
+}
+ 
