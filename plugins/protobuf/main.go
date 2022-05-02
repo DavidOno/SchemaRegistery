@@ -90,15 +90,21 @@ func addSchemaName(file *protogen.File) string {
 }
 
 func addComponents(file *protogen.File) string {
-	components := "\"components\": [\n"
+	components := ""
+	newLine(&components, "components", "[{", 0)
+	// components := "\"components\": [{\n"
 	for index, msg := range file.Proto.MessageType {
-		var component string
+		component := ""
 		if index > 0 {
 			component += ","
 		}
-		component += "{\"object\": {\n"
-		component += fmt.Sprintf("\"name\": \"%s\"", *msg.Name)
-		component += "}\n}"
+		// component += "{\"object\": {\n"
+		newLine(&component, "object", "{", 1)
+		newLine(&component, "name", *msg.Name, 2)
+		newLineSingleElement(&component, "}", 1)
+		// newLine(component, "fields", "[{", 2)
+		// component += fmt.Sprintf("\"name\": \"%s\"", *msg.Name)
+		// component += "}\n}"
 		components += component
 	}
 	components += "]"
@@ -107,4 +113,20 @@ func addComponents(file *protogen.File) string {
 
 func addJSONEnding() string {
 	return fmt.Sprintf("\n}")
+}
+
+func newLine(toAddTo *string, toAddTag string, toAddValue string, level int) {
+	*toAddTo += "\n" + addTabs(level) + fmt.Sprintf("\"%s\": \"%s\"", toAddTag, toAddValue)
+}
+
+func newLineSingleElement(toAddTo *string, toAdd string, level int) {
+	*toAddTo += "\n" + addTabs(level) + fmt.Sprintf("\"%s\"", toAdd)
+}
+
+func addTabs(level int) string {
+	tabs := ""
+	for i := 0; i < level; i++ {
+		tabs += "\t"
+	}
+	return tabs
 }
