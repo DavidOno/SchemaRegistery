@@ -55,49 +55,41 @@ func main() {
 
 func createJson(file *protogen.File) bytes.Buffer {
 	var buf bytes.Buffer
-	buf.Write([]byte(addJSONBeginning()))
-	buf.Write([]byte(addSchemaName(file)))
-	buf.Write([]byte(addComponents(file)))
-	buf.Write([]byte(addJSONEnding()))
+	jsonDoc := ""
+	addJSONBeginning(&jsonDoc)
+	addSchemaName(&jsonDoc, file)
+	addComponents(&jsonDoc, file)
+	addJSONEnding(&jsonDoc)
+	buf.Write([]byte(jsonDoc))
 	return buf
 }
 
-func addJSONBeginning() string {
-	jsonBegin := ""
-	newLineSingleElement(&jsonBegin, "{", 0)
-	return jsonBegin
-	// return "{\n"
+func addJSONBeginning(jsonDoc *string) {
+	*jsonDoc += "{"
 }
 
-func addSchemaName(file *protogen.File) string {
-	schemaName := ""
-	newLine(&schemaName, "name", file.GeneratedFilenamePrefix, 0)
-	return schemaName
-	// return fmt.Sprintf("\"name\": \"%s\",\n", file.GeneratedFilenamePrefix)
+func addSchemaName(jsonDoc *string, file *protogen.File) {
+	newLine(jsonDoc, "name", file.GeneratedFilenamePrefix, 0)
 }
 
-func addComponents(file *protogen.File) string {
+func addComponents(jsonDoc *string, file *protogen.File) string {
 	components := ""
-	newLineOnlyTag(&components, "components", "[{", 0)
+	newLineOnlyTag(jsonDoc, "components", "[{", 0)
 	for index, msg := range file.Proto.MessageType {
 		component := ""
 		if index > 0 {
 			component += ","
 		}
-		newLineOnlyTag(&component, "object", "{", 1)
-		newLine(&component, "name", *msg.Name, 2)
-		newLineSingleElement(&component, "}", 1)
-		components += component
+		newLineOnlyTag(jsonDoc, "object", "{", 1)
+		newLine(jsonDoc, "name", *msg.Name, 2)
+		newLineSingleElement(jsonDoc, "}", 1)
 	}
-	components += "]"
+	newLineSingleElement(jsonDoc, "]", 0)
 	return components
 }
 
-func addJSONEnding() string {
-	jsonEnd := ""
-	newLineSingleElement(&jsonEnd, "}", 0)
-	return jsonEnd
-	// return fmt.Sprintf("\n}")
+func addJSONEnding(jsonDoc *string) {
+	newLineSingleElement(jsonDoc, "}", 0)
 }
 
 func newLine(toAddTo *string, toAddTag string, toAddValue string, level int) {
