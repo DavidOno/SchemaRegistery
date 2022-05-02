@@ -32,25 +32,6 @@ func main() {
 
 		// 1. Initialise a buffer to hold the generated code
 		var buf bytes.Buffer
-
-		//Intermediate
-		// info := fmt.Sprintf("info: \n %v", file)
-		// buf.Write([]byte(info))
-
-		// 2. Write the package name
-		// 3. For each message add our Foo() method
-		// for _, msg := range file.Proto.MessageType {
-		//Intermediate - start
-		// info := fmt.Sprintf("info: \n %v\n\n", *msg)
-		// buf.Write([]byte(info))
-		// info = fmt.Sprintf("info2: \n %v \n\n", msg.GetField()[0].Type)
-		// buf.Write([]byte(info))
-		//Intermediate - end
-		// buf.Write([]byte(fmt.Sprintf(`
-		// func (x %s) Foo() string {
-		//    return "bar"
-		// }`, *msg.Name)))
-		// }
 		buf = createJson(file)
 
 		// 4. Specify the output filename, in this case test.foo.go
@@ -91,20 +72,15 @@ func addSchemaName(file *protogen.File) string {
 
 func addComponents(file *protogen.File) string {
 	components := ""
-	newLine(&components, "components", "[{", 0)
-	// components := "\"components\": [{\n"
+	newLineOnlyTag(&components, "components", "[{", 0)
 	for index, msg := range file.Proto.MessageType {
 		component := ""
 		if index > 0 {
 			component += ","
 		}
-		// component += "{\"object\": {\n"
-		newLine(&component, "object", "{", 1)
+		newLineOnlyTag(&component, "object", "{", 1)
 		newLine(&component, "name", *msg.Name, 2)
 		newLineSingleElement(&component, "}", 1)
-		// newLine(component, "fields", "[{", 2)
-		// component += fmt.Sprintf("\"name\": \"%s\"", *msg.Name)
-		// component += "}\n}"
 		components += component
 	}
 	components += "]"
@@ -119,8 +95,12 @@ func newLine(toAddTo *string, toAddTag string, toAddValue string, level int) {
 	*toAddTo += "\n" + addTabs(level) + fmt.Sprintf("\"%s\": \"%s\"", toAddTag, toAddValue)
 }
 
+func newLineOnlyTag(toAddTo *string, tagToAdd string, remainderToAdd string, level int) {
+	*toAddTo += "\n" + addTabs(level) + fmt.Sprintf("\"%s\": %s", tagToAdd, remainderToAdd)
+}
+
 func newLineSingleElement(toAddTo *string, toAdd string, level int) {
-	*toAddTo += "\n" + addTabs(level) + fmt.Sprintf("\"%s\"", toAdd)
+	*toAddTo += "\n" + addTabs(level) + toAdd
 }
 
 func addTabs(level int) string {
