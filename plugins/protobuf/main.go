@@ -11,6 +11,8 @@ import (
 	"google.golang.org/protobuf/types/pluginpb"
 )
 
+var jsonDoc string = ""
+
 func main() {
 	// Protoc passes pluginpb.CodeGeneratorRequest in via stdin
 	// marshalled with Protobuf
@@ -53,55 +55,55 @@ func main() {
 	fmt.Fprintf(os.Stdout, string(out))
 }
 
+func createJSON(file *protogen.File) bytes.Buffer {
+
+}
+
 func createJson(file *protogen.File) bytes.Buffer {
 	var buf bytes.Buffer
-	jsonDoc := ""
-	addJSONBeginning(&jsonDoc)
-	addSchemaName(&jsonDoc, file)
-	addComponents(&jsonDoc, file)
-	addJSONEnding(&jsonDoc)
+	addJSONBeginning()
+	addSchemaName(file)
+	addComponents(file)
+	addJSONEnding()
 	buf.Write([]byte(jsonDoc))
 	return buf
 }
 
-func addJSONBeginning(jsonDoc *string) {
-	*jsonDoc += "{"
+func addJSONBeginning() {
+	jsonDoc += "{"
 }
 
-func addSchemaName(jsonDoc *string, file *protogen.File) {
-	newLine(jsonDoc, "name", file.GeneratedFilenamePrefix, 0)
+func addSchemaName(file *protogen.File) {
+	newLine("name", file.GeneratedFilenamePrefix, 0)
 }
 
-func addComponents(jsonDoc *string, file *protogen.File) string {
-	components := ""
-	newLineOnlyTag(jsonDoc, "components", "[{", 0)
+func addComponents(file *protogen.File) {
+	newLineOnlyTag("components", "[{", 0)
 	for index, msg := range file.Proto.MessageType {
-		component := ""
 		if index > 0 {
-			component += ","
+			jsonDoc += ","
 		}
-		newLineOnlyTag(jsonDoc, "object", "{", 1)
-		newLine(jsonDoc, "name", *msg.Name, 2)
-		newLineSingleElement(jsonDoc, "}", 1)
+		newLineOnlyTag("object", "{", 1)
+		newLine("name", *msg.Name, 2)
+		newLineSingleElement("}", 1)
 	}
-	newLineSingleElement(jsonDoc, "]", 0)
-	return components
+	newLineSingleElement("]", 0)
 }
 
-func addJSONEnding(jsonDoc *string) {
-	newLineSingleElement(jsonDoc, "}", 0)
+func addJSONEnding() {
+	newLineSingleElement("}", 0)
 }
 
-func newLine(toAddTo *string, toAddTag string, toAddValue string, level int) {
-	*toAddTo += "\n" + addTabs(level) + fmt.Sprintf("\"%s\": \"%s\",", toAddTag, toAddValue)
+func newLine(toAddTag string, toAddValue string, level int) {
+	jsonDoc += "\n" + addTabs(level) + fmt.Sprintf("\"%s\": \"%s\",", toAddTag, toAddValue)
 }
 
-func newLineOnlyTag(toAddTo *string, tagToAdd string, remainderToAdd string, level int) {
-	*toAddTo += "\n" + addTabs(level) + fmt.Sprintf("\"%s\": %s", tagToAdd, remainderToAdd)
+func newLineOnlyTag(tagToAdd string, remainderToAdd string, level int) {
+	jsonDoc += "\n" + addTabs(level) + fmt.Sprintf("\"%s\": %s", tagToAdd, remainderToAdd)
 }
 
-func newLineSingleElement(toAddTo *string, toAdd string, level int) {
-	*toAddTo += "\n" + addTabs(level) + toAdd
+func newLineSingleElement(toAdd string, level int) {
+	jsonDoc += "\n" + addTabs(level) + toAdd
 }
 
 func addTabs(level int) string {
