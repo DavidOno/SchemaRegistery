@@ -63,11 +63,17 @@ func createJson(file *protogen.File) bytes.Buffer {
 }
 
 func addJSONBeginning() string {
-	return fmt.Sprintf("{\n")
+	jsonBegin := ""
+	newLineSingleElement(&jsonBegin, "{", 0)
+	return jsonBegin
+	// return "{\n"
 }
 
 func addSchemaName(file *protogen.File) string {
-	return fmt.Sprintf("\"name\": \"%s\",\n", file.GeneratedFilenamePrefix)
+	schemaName := ""
+	newLine(&schemaName, "name", file.GeneratedFilenamePrefix, 0)
+	return schemaName
+	// return fmt.Sprintf("\"name\": \"%s\",\n", file.GeneratedFilenamePrefix)
 }
 
 func addComponents(file *protogen.File) string {
@@ -88,11 +94,14 @@ func addComponents(file *protogen.File) string {
 }
 
 func addJSONEnding() string {
-	return fmt.Sprintf("\n}")
+	jsonEnd := ""
+	newLineSingleElement(&jsonEnd, "}", 0)
+	return jsonEnd
+	// return fmt.Sprintf("\n}")
 }
 
 func newLine(toAddTo *string, toAddTag string, toAddValue string, level int) {
-	*toAddTo += "\n" + addTabs(level) + fmt.Sprintf("\"%s\": \"%s\"", toAddTag, toAddValue)
+	*toAddTo += "\n" + addTabs(level) + fmt.Sprintf("\"%s\": \"%s\",", toAddTag, toAddValue)
 }
 
 func newLineOnlyTag(toAddTo *string, tagToAdd string, remainderToAdd string, level int) {

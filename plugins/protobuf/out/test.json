@@ -1,11 +1,11 @@
+
 {
 "name": "test",
-
 "components": [{
 	"object": {
-		"name": "Person"
+		"name": "Person",
 	},
 	"object": {
-		"name": "AddressBook"
+		"name": "AddressBook",
 	}]
 }
