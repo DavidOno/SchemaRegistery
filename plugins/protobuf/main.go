@@ -55,10 +55,6 @@ func main() {
 	fmt.Fprintf(os.Stdout, string(out))
 }
 
-func createJSON(file *protogen.File) bytes.Buffer {
-
-}
-
 func createJson(file *protogen.File) bytes.Buffer {
 	var buf bytes.Buffer
 	addJSONBeginning()
@@ -96,6 +92,12 @@ func addJSONEnding() {
 
 func newLine(toAddTag string, toAddValue string, level int) {
 	jsonDoc += "\n" + addTabs(level) + fmt.Sprintf("\"%s\": \"%s\",", toAddTag, toAddValue)
+}
+
+func jsonList(name string, iterable []JsonObject) {
+	jsonDoc += "\n" + fmt.Sprintf("\"%s\": [", name)
+
+	jsonDoc += "\n]"
 }
 
 func newLineOnlyTag(tagToAdd string, remainderToAdd string, level int) {
