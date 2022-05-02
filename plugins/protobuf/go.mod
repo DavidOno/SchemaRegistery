@@ -1,4 +1,4 @@
-module github.com/de.maibornwolff.iiot/protoc-gen-datacatalog
+module github.com/test/protoc-gen-foo
 
 go 1.17
 

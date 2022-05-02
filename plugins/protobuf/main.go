@@ -34,7 +34,7 @@ func main() {
 
 		// 1. Initialise a buffer to hold the generated code
 		var buf bytes.Buffer
-		buf = createJson(file)
+		buf = createJSON(file)
 
 		// 4. Specify the output filename, in this case test.foo.go
 		filename := file.GeneratedFilenamePrefix + ".json"
@@ -53,6 +53,31 @@ func main() {
 
 	// Write the response to stdout, to be picked up by protoc
 	fmt.Fprintf(os.Stdout, string(out))
+}
+
+func createJSON(file *protogen.File) bytes.Buffer {
+	var buf bytes.Buffer
+	root := JsonObject{}
+	topLevelList := JsonKVList{}
+	schemaName := JsonKV{"name", String{file.GeneratedFilenamePrefix}}
+	arrayOfComponents := JsonArray{}
+	for _, msg := range file.Proto.MessageType {
+		messageProperties := JsonKVList{}
+		messageName := JsonKV{"name", String{*msg.Name}}
+		messageProperties.JsonElements = append(messageProperties.JsonElements, messageName)
+		messageObject := JsonObject{}
+		messageObject.Elements = append(messageObject.Elements, messageProperties)
+		message := JsonKV{"object", messageObject}
+		messageWrapperObj := JsonObject{}
+		messageWrapperObj.Elements = append(messageWrapperObj.Elements, message)
+		arrayOfComponents.Objects = append(arrayOfComponents.Objects, messageWrapperObj)
+	}
+	components := JsonKV{"components", arrayOfComponents}
+	topLevelList.JsonElements = append(topLevelList.JsonElements, schemaName, components)
+	root.Elements = append(root.Elements, topLevelList)
+	root.Append()
+	buf.Write([]byte(jsonDoc))
+	return buf
 }
 
 func createJson(file *protogen.File) bytes.Buffer {

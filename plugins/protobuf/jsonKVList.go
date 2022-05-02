@@ -1,10 +1,10 @@
 package main
 
-type JsonElementList struct {
-	JsonElements []Json
+type JsonKVList struct {
+	JsonElements []JsonElement
 }
 
-func (jsonElementList JsonElementList) Append() {
+func (jsonElementList JsonKVList) Append() {
 	for index, jsonElement := range jsonElementList.JsonElements {
 		if index > 0 {
 			jsonDoc += ","
