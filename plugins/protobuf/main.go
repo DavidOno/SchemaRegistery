@@ -84,39 +84,6 @@ func flattenMessages(file *protogen.File) []*protogen.Message {
 }
 
 func getType(kind protoreflect.Kind) string {
-	// switch kind {
-	// case 1:
-	// 	return "double"
-	// case 2:
-	// 	return "float"
-	// case 3:
-	// 	return "int64"
-	// case 4:
-	// 	return "uint64"
-	// case 5:
-	// 	return "int32"
-	// case 6:
-	// 	return "fixed64"
-	// case 7:
-	// 	return "fixed32"
-	// case 8:
-	// 	return "boolean"
-	// case 9:
-	// 	return "string"
-	// case 12:
-	// 	return "byte"
-	// case 13:
-	// 	return "uint32"
-	// case 14:
-	// 	return "enum"
-	// case 15:
-	// 	return "fixed32"
-	// case 16:
-	// 	return "fixed64"
-	// case 17:
-	// 	return "int32"
-	// default:
-	// 	return "unknown type - this should not happen"
 	switch kind {
 	case protoreflect.BoolKind:
 		return "boolean"
