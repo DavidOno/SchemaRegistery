@@ -1,6 +1,7 @@
 syntax = "proto2";
 
 option go_package = ".;test";
+
 /* SearchRequest represents a search query, with pagination options to
  * indicate which results to include in the response.
  * And an extra line. */

@@ -305,7 +305,9 @@ func extractCommentForField(field *protogen.Field) string {
 func prepareComment(comment string) string {
 	comment = removeAllDoubleSlashes(comment)
 	comment = removeLastNewLine(comment)
-	return replaceIntermediateLineBreaks(comment)
+	comment = replaceIntermediateLineBreaks(comment)
+	comment = removeAllDoubleWhiteSpaces(comment)
+	return strings.Trim(comment, " ")
 }
 
 func replaceIntermediateLineBreaks(comment string) string {
@@ -323,10 +325,14 @@ func removeAllDoubleSlashes(comment string) string {
 	return strings.ReplaceAll(comment, "//", "")
 }
 
+func removeAllDoubleWhiteSpaces(comment string) string {
+	return strings.ReplaceAll(comment, "  ", " ")
+}
+
 func findTopLevelComment(file *protogen.File) string {
 	for _, location := range file.Proto.SourceCodeInfo.Location {
 		if len(location.LeadingDetachedComments) > 0 {
-			return location.LeadingDetachedComments[0]
+			return prepareComment(location.LeadingDetachedComments[0])
 		}
 	}
 	return ""
