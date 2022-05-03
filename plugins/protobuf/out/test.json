@@ -79,7 +79,16 @@
 		"enum": {
 			"name": "PhoneType",
 			"comment": "This is a comment for the phoneType enum",
-			"values": ["mobile","home","work"]
+			"values": [{
+				"name": "mobile",
+				"comment": ""
+			},{
+				"name": "home",
+				"comment": "multiline comment"
+			},{
+				"name": "work",
+				"comment": ""
+			}]
 		}
 	}]
 }

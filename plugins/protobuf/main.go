@@ -283,8 +283,20 @@ func addFieldProperties(field *protogen.Field, fieldProperties *JsonKVList) {
 
 func addFieldsForEnum(enum *protogen.Enum, fieldsArray *JsonArray) {
 	for _, value := range enum.Values {
-		fieldsArray.Objects = append(fieldsArray.Objects, String{string(value.Desc.Name())})
+		valueList := JsonKVList{}
+		valueObj := JsonObject{}
+		for i := 0; i < 2; i++ {
+			switch i {
+			case 0:
+				valueList.JsonElements = append(valueList.JsonElements, JsonKV{"name", String{string(value.Desc.Name())}})
+			case 1:
+				valueList.JsonElements = append(valueList.JsonElements, JsonKV{"comment", String{prepareComment(value.Comments.Leading.String())}})
+			}
+		}
+		valueObj.Elements = append(valueObj.Elements, valueList)
+		fieldsArray.Objects = append(fieldsArray.Objects, valueObj)
 	}
+
 }
 
 func extractCommentForMessage(msg *protogen.Message) string {
