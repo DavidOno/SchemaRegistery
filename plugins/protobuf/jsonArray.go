@@ -1,16 +1,16 @@
 package main
 
 type JsonArray struct {
-	Objects []JsonObject
+	Objects []JsonElement
 }
 
-func (jsonList JsonArray) Append() {
-	jsonDoc += "\n["
+func (jsonList JsonArray) Append(indentationLevel int) {
+	jsonDoc += "["
 	for index, element := range jsonList.Objects {
 		if index > 0 {
 			jsonDoc += ","
 		}
-		element.Append()
+		element.Append(indentationLevel)
 	}
-	jsonDoc += "\n]"
+	jsonDoc += "]"
 }

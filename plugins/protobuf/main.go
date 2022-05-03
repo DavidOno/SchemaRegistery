@@ -75,68 +75,7 @@ func createJSON(file *protogen.File) bytes.Buffer {
 	components := JsonKV{"components", arrayOfComponents}
 	topLevelList.JsonElements = append(topLevelList.JsonElements, schemaName, components)
 	root.Elements = append(root.Elements, topLevelList)
-	root.Append()
+	root.Append(0)
 	buf.Write([]byte(jsonDoc))
 	return buf
-}
-
-func createJson(file *protogen.File) bytes.Buffer {
-	var buf bytes.Buffer
-	addJSONBeginning()
-	addSchemaName(file)
-	addComponents(file)
-	addJSONEnding()
-	buf.Write([]byte(jsonDoc))
-	return buf
-}
-
-func addJSONBeginning() {
-	jsonDoc += "{"
-}
-
-func addSchemaName(file *protogen.File) {
-	newLine("name", file.GeneratedFilenamePrefix, 0)
-}
-
-func addComponents(file *protogen.File) {
-	newLineOnlyTag("components", "[{", 0)
-	for index, msg := range file.Proto.MessageType {
-		if index > 0 {
-			jsonDoc += ","
-		}
-		newLineOnlyTag("object", "{", 1)
-		newLine("name", *msg.Name, 2)
-		newLineSingleElement("}", 1)
-	}
-	newLineSingleElement("]", 0)
-}
-
-func addJSONEnding() {
-	newLineSingleElement("}", 0)
-}
-
-func newLine(toAddTag string, toAddValue string, level int) {
-	jsonDoc += "\n" + addTabs(level) + fmt.Sprintf("\"%s\": \"%s\",", toAddTag, toAddValue)
-}
-
-func jsonList(name string, iterable []JsonObject) {
-	jsonDoc += "\n" + fmt.Sprintf("\"%s\": [", name)
-
-	jsonDoc += "\n]"
-}
-
-func newLineOnlyTag(tagToAdd string, remainderToAdd string, level int) {
-	jsonDoc += "\n" + addTabs(level) + fmt.Sprintf("\"%s\": %s", tagToAdd, remainderToAdd)
-}
-
-func newLineSingleElement(toAdd string, level int) {
-	jsonDoc += "\n" + addTabs(level) + toAdd
-}
-
-func addTabs(level int) string {
-	tabs := ""
-	for i := 0; i < level; i++ {
-		tabs += "\t"
-	}
-	return tabs
 }
