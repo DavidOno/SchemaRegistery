@@ -8,6 +8,7 @@ import (
 
 	"google.golang.org/protobuf/compiler/protogen"
 	"google.golang.org/protobuf/proto"
+	"google.golang.org/protobuf/reflect/protoreflect"
 	"google.golang.org/protobuf/types/pluginpb"
 )
 
@@ -82,6 +83,43 @@ func flattenMessages(file *protogen.File) []*protogen.Message {
 	return messages
 }
 
+func getType(kind protoreflect.Kind) string {
+	switch kind {
+	case 1:
+		return "double"
+	case 2:
+		return "float"
+	case 3:
+		return "int64"
+	case 4:
+		return "uint64"
+	case 5:
+		return "int32"
+	case 6:
+		return "fixed64"
+	case 7:
+		return "fixed32"
+	case 8:
+		return "boolean"
+	case 9:
+		return "string"
+	case 12:
+		return "byte"
+	case 13:
+		return "uint32"
+	case 14:
+		return "enum"
+	case 15:
+		return "fixed32"
+	case 16:
+		return "fixed64"
+	case 17:
+		return "int32"
+	default:
+		return "unknown type - this should not happen"
+	}
+}
+
 func createJSON(file *protogen.File, messages []*protogen.Message) bytes.Buffer {
 	// debug(file)
 	var buf bytes.Buffer
@@ -97,7 +135,18 @@ func createJSON(file *protogen.File, messages []*protogen.Message) bytes.Buffer 
 			fieldObj := JsonObject{}
 			fieldProperties := JsonKVList{}
 			for i := 0; i < len(specifiedFields); i++ {
-				specifiedField := JsonKV{specifiedFields[i], String{string(field.Desc.Name())}}
+				specifiedField := JsonKV{}
+				specifiedField.Name = specifiedFields[i]
+				switch i {
+				case 0:
+					specifiedField.Value = String{string(field.Desc.Name())}
+				case 1:
+					specifiedField.Value = String{string(field.Desc.Name())}
+				case 2:
+					specifiedField.Value = String{getType(field.Desc.Kind())}
+				default:
+					specifiedField.Value = String{string(field.Desc.Name())}
+				}
 				fieldProperties.JsonElements = append(fieldProperties.JsonElements, specifiedField)
 			}
 			fieldObj.Elements = append(fieldObj.Elements, fieldProperties)

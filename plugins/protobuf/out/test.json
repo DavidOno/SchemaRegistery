@@ -6,28 +6,28 @@
 			"fields": [{
 				"name": "name",
 				"optional": "name",
-				"type": "name",
+				"type": "string",
 				"typeRef": "name",
 				"minCardinality": "name",
 				"maxCardinality": "name"
 			},{
 				"name": "id",
 				"optional": "id",
-				"type": "id",
+				"type": "int32",
 				"typeRef": "id",
 				"minCardinality": "id",
 				"maxCardinality": "id"
 			},{
 				"name": "email",
 				"optional": "email",
-				"type": "email",
+				"type": "string",
 				"typeRef": "email",
 				"minCardinality": "email",
 				"maxCardinality": "email"
 			},{
 				"name": "phones",
 				"optional": "phones",
-				"type": "phones",
+				"type": "unknown type - this should not happen",
 				"typeRef": "phones",
 				"minCardinality": "phones",
 				"maxCardinality": "phones"
@@ -39,14 +39,14 @@
 			"fields": [{
 				"name": "number",
 				"optional": "number",
-				"type": "number",
+				"type": "string",
 				"typeRef": "number",
 				"minCardinality": "number",
 				"maxCardinality": "number"
 			},{
 				"name": "type",
 				"optional": "type",
-				"type": "type",
+				"type": "enum",
 				"typeRef": "type",
 				"minCardinality": "type",
 				"maxCardinality": "type"
@@ -58,7 +58,7 @@
 			"fields": [{
 				"name": "people",
 				"optional": "people",
-				"type": "people",
+				"type": "unknown type - this should not happen",
 				"typeRef": "people",
 				"minCardinality": "people",
 				"maxCardinality": "people"
