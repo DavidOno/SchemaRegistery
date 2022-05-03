@@ -210,31 +210,7 @@ func createJSON(file *protogen.File, messages []*protogen.Message) bytes.Buffer 
 		messageProperties := JsonKVList{}
 		messageName := JsonKV{"name", String{string(msg.Desc.Name())}}
 		fieldsArray := JsonArray{}
-		for _, field := range msg.Fields {
-			fieldObj := JsonObject{}
-			fieldProperties := JsonKVList{}
-			for i := 0; i < len(specifiedFields); i++ {
-				specifiedField := JsonKV{}
-				specifiedField.Name = specifiedFields[i]
-				switch i {
-				case 0:
-					specifiedField.Value = String{string(field.Desc.Name())}
-				case 1:
-					specifiedField.Value = String{getIfOptional(field.Desc.Cardinality())}
-				case 2:
-					specifiedField.Value = String{getType(field.Desc.Kind())}
-				case 4:
-					specifiedField.Value = String{getMinCardinality(field.Desc.Cardinality())}
-				case 5:
-					specifiedField.Value = String{getMaxCardinality(field.Desc.Cardinality())}
-				default:
-					specifiedField.Value = String{string(field.Desc.Name())}
-				}
-				fieldProperties.JsonElements = append(fieldProperties.JsonElements, specifiedField)
-			}
-			fieldObj.Elements = append(fieldObj.Elements, fieldProperties)
-			fieldsArray.Objects = append(fieldsArray.Objects, fieldObj)
-		}
+		addFields(msg, &fieldsArray)
 		fields := JsonKV{"fields", fieldsArray}
 		messageProperties.JsonElements = append(messageProperties.JsonElements, messageName, fields)
 		messageObject := JsonObject{}
@@ -250,4 +226,34 @@ func createJSON(file *protogen.File, messages []*protogen.Message) bytes.Buffer 
 	root.Append(0)
 	buf.Write([]byte(jsonDoc))
 	return buf
+}
+
+func addFields(msg *protogen.Message, fieldsArray *JsonArray) {
+	// fmt.Println(len(fieldsArray.Objects))
+	for _, field := range msg.Fields {
+		fieldObj := JsonObject{}
+		fieldProperties := JsonKVList{}
+		for i := 0; i < len(specifiedFields); i++ {
+			specifiedField := JsonKV{}
+			specifiedField.Name = specifiedFields[i]
+			switch i {
+			case 0:
+				specifiedField.Value = String{string(field.Desc.Name())}
+			case 1:
+				specifiedField.Value = String{getIfOptional(field.Desc.Cardinality())}
+			case 2:
+				specifiedField.Value = String{getType(field.Desc.Kind())}
+			case 4:
+				specifiedField.Value = String{getMinCardinality(field.Desc.Cardinality())}
+			case 5:
+				specifiedField.Value = String{getMaxCardinality(field.Desc.Cardinality())}
+			default:
+				specifiedField.Value = String{string(field.Desc.Name())}
+			}
+			fieldProperties.JsonElements = append(fieldProperties.JsonElements, specifiedField)
+		}
+		fieldObj.Elements = append(fieldObj.Elements, fieldProperties)
+		fieldsArray.Objects = append(fieldsArray.Objects, fieldObj)
+		// fmt.Println(len(fieldsArray.Objects))
+	}
 }
