@@ -206,6 +206,16 @@ func createJSON(file *protogen.File, messages []*protogen.Message) bytes.Buffer 
 	topLevelList := JsonKVList{}
 	schemaName := JsonKV{"name", String{file.GeneratedFilenamePrefix}}
 	arrayOfComponents := JsonArray{}
+	addMessages(messages, &arrayOfComponents)
+	components := JsonKV{"components", arrayOfComponents}
+	topLevelList.JsonElements = append(topLevelList.JsonElements, schemaName, components)
+	root.Elements = append(root.Elements, topLevelList)
+	root.Append(0)
+	buf.Write([]byte(jsonDoc))
+	return buf
+}
+
+func addMessages(messages []*protogen.Message, arrayOfComponents *JsonArray) {
 	for _, msg := range messages {
 		messageProperties := JsonKVList{}
 		messageName := JsonKV{"name", String{string(msg.Desc.Name())}}
@@ -220,16 +230,9 @@ func createJSON(file *protogen.File, messages []*protogen.Message) bytes.Buffer 
 		messageWrapperObj.Elements = append(messageWrapperObj.Elements, message)
 		arrayOfComponents.Objects = append(arrayOfComponents.Objects, messageWrapperObj)
 	}
-	components := JsonKV{"components", arrayOfComponents}
-	topLevelList.JsonElements = append(topLevelList.JsonElements, schemaName, components)
-	root.Elements = append(root.Elements, topLevelList)
-	root.Append(0)
-	buf.Write([]byte(jsonDoc))
-	return buf
 }
 
 func addFields(msg *protogen.Message, fieldsArray *JsonArray) {
-	// fmt.Println(len(fieldsArray.Objects))
 	for _, field := range msg.Fields {
 		fieldObj := JsonObject{}
 		fieldProperties := JsonKVList{}
@@ -254,6 +257,5 @@ func addFields(msg *protogen.Message, fieldsArray *JsonArray) {
 		}
 		fieldObj.Elements = append(fieldObj.Elements, fieldProperties)
 		fieldsArray.Objects = append(fieldsArray.Objects, fieldObj)
-		// fmt.Println(len(fieldsArray.Objects))
 	}
 }
