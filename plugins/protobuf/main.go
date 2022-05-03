@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"strings"
 
 	"google.golang.org/protobuf/compiler/protogen"
 	"google.golang.org/protobuf/proto"
@@ -19,7 +20,8 @@ var specifiedFields = map[int]string{
 	2: "type",
 	3: "typeRef",
 	4: "minCardinality",
-	5: "maxCardinality"}
+	5: "maxCardinality",
+	6: "comment"}
 
 func main() {
 	// Protoc passes pluginpb.CodeGeneratorRequest in via stdin
@@ -66,11 +68,8 @@ func main() {
 
 func debug(file *protogen.File) {
 	fmt.Println("DEBUG: ")
-	fmt.Println(file.Messages[0].Desc.Name())
-	fmt.Println(file.Messages[0].Messages[0].Desc.Name())
-	fmt.Println(file.Messages[0].Enums[0].Desc.Name())
-	fmt.Println(file.Messages[1].Desc.Name())
-	fmt.Println(file.Enums[0].Desc.Name())
+	fmt.Println(file.Proto.SourceCodeInfo.Location[4].LeadingDetachedComments)
+	fmt.Println("DEBUG_END")
 }
 
 func collectMessages(file *protogen.File) []*protogen.Message {
@@ -193,15 +192,17 @@ func getMaxCardinality(cardinality protoreflect.Cardinality) string {
 }
 
 func createJSON(file *protogen.File, messages []*protogen.Message, enums []*protogen.Enum) bytes.Buffer {
+	// debug(file)
 	var buf bytes.Buffer
 	root := JsonObject{}
 	topLevelList := JsonKVList{}
 	schemaName := JsonKV{"name", String{file.GeneratedFilenamePrefix}}
+	comment := JsonKV{"comment", String{findTopLevelComment(file)}}
 	arrayOfComponents := JsonArray{}
 	addMessages(messages, &arrayOfComponents)
 	addEnums(enums, &arrayOfComponents)
 	components := JsonKV{"components", arrayOfComponents}
-	topLevelList.JsonElements = append(topLevelList.JsonElements, schemaName, components)
+	topLevelList.JsonElements = append(topLevelList.JsonElements, schemaName, comment, components)
 	root.Elements = append(root.Elements, topLevelList)
 	root.Append(0)
 	buf.Write([]byte(jsonDoc))
@@ -212,10 +213,11 @@ func addMessages(messages []*protogen.Message, arrayOfComponents *JsonArray) {
 	for _, msg := range messages {
 		messageProperties := JsonKVList{}
 		messageName := JsonKV{"name", String{string(msg.Desc.Name())}}
+		comment := JsonKV{"comment", String{extractCommentForMessage(msg)}}
 		fieldsArray := JsonArray{}
 		addFieldsForMessage(msg, &fieldsArray)
 		fields := JsonKV{"fields", fieldsArray}
-		messageProperties.JsonElements = append(messageProperties.JsonElements, messageName, fields)
+		messageProperties.JsonElements = append(messageProperties.JsonElements, messageName, comment, fields)
 		messageObject := JsonObject{}
 		messageObject.Elements = append(messageObject.Elements, messageProperties)
 		message := JsonKV{"object", messageObject}
@@ -229,10 +231,11 @@ func addEnums(enums []*protogen.Enum, arrayOfComponents *JsonArray) {
 	for _, enum := range enums {
 		enumProperties := JsonKVList{}
 		enumName := JsonKV{"name", String{string(enum.Desc.Name())}}
+		comment := JsonKV{"comment", String{extractCommentForEnum(enum)}}
 		fieldsArray := JsonArray{}
 		addFieldsForEnum(enum, &fieldsArray)
 		fields := JsonKV{"values", fieldsArray}
-		enumProperties.JsonElements = append(enumProperties.JsonElements, enumName, fields)
+		enumProperties.JsonElements = append(enumProperties.JsonElements, enumName, comment, fields)
 		enumObject := JsonObject{}
 		enumObject.Elements = append(enumObject.Elements, enumProperties)
 		enum := JsonKV{"enum", enumObject}
@@ -269,6 +272,8 @@ func addFieldProperties(field *protogen.Field, fieldProperties *JsonKVList) {
 			specifiedField.Value = String{getMinCardinality(field.Desc.Cardinality())}
 		case 5:
 			specifiedField.Value = String{getMaxCardinality(field.Desc.Cardinality())}
+		case 6:
+			specifiedField.Value = String{extractCommentForField(field)}
 		default:
 			specifiedField.Value = String{string(field.Desc.Name())}
 		}
@@ -280,4 +285,49 @@ func addFieldsForEnum(enum *protogen.Enum, fieldsArray *JsonArray) {
 	for _, value := range enum.Values {
 		fieldsArray.Objects = append(fieldsArray.Objects, String{string(value.Desc.Name())})
 	}
+}
+
+func extractCommentForMessage(msg *protogen.Message) string {
+	comment := msg.Comments.Leading.String()
+	return prepareComment(comment)
+}
+
+func extractCommentForEnum(enum *protogen.Enum) string {
+	comment := enum.Comments.Leading.String()
+	return prepareComment(comment)
+}
+
+func extractCommentForField(field *protogen.Field) string {
+	comment := field.Comments.Leading.String()
+	return prepareComment(comment)
+}
+
+func prepareComment(comment string) string {
+	comment = removeAllDoubleSlashes(comment)
+	comment = removeLastNewLine(comment)
+	return replaceIntermediateLineBreaks(comment)
+}
+
+func replaceIntermediateLineBreaks(comment string) string {
+	return strings.ReplaceAll(comment, "\n", " ")
+}
+
+func removeLastNewLine(comment string) string {
+	if strings.HasSuffix(comment, "\n") {
+		return comment[:len(comment)-1]
+	}
+	return comment
+}
+
+func removeAllDoubleSlashes(comment string) string {
+	return strings.ReplaceAll(comment, "//", "")
+}
+
+func findTopLevelComment(file *protogen.File) string {
+	for _, location := range file.Proto.SourceCodeInfo.Location {
+		if len(location.LeadingDetachedComments) > 0 {
+			return location.LeadingDetachedComments[0]
+		}
+	}
+	return ""
 }

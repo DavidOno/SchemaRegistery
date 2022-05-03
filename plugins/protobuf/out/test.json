@@ -1,72 +1,84 @@
 {
 	"name": "test",
+	"comment": "",
 	"components": [{
 		"object": {
 			"name": "Person",
+			"comment": "This is a comment for the person message",
 			"fields": [{
 				"name": "name",
 				"optional": "false",
 				"type": "string",
 				"typeRef": "null",
 				"minCardinality": "1",
-				"maxCardinality": "1"
+				"maxCardinality": "1",
+				"comment": "This is a comment for the name property"
 			},{
 				"name": "id",
 				"optional": "false",
 				"type": "int32",
 				"typeRef": "null",
 				"minCardinality": "1",
-				"maxCardinality": "1"
+				"maxCardinality": "1",
+				"comment": ""
 			},{
 				"name": "email",
 				"optional": "true",
 				"type": "string",
 				"typeRef": "null",
 				"minCardinality": "1",
-				"maxCardinality": "1"
+				"maxCardinality": "1",
+				"comment": "This is a comment for the email property"
 			},{
 				"name": "phones",
 				"optional": "false",
 				"type": "object",
 				"typeRef": "Person.PhoneNumber",
 				"minCardinality": "0",
-				"maxCardinality": "*"
+				"maxCardinality": "*",
+				"comment": ""
 			}]
 		}
 	},{
 		"object": {
 			"name": "PhoneNumber",
+			"comment": "This is a comment for the phoneNumber message",
 			"fields": [{
 				"name": "number",
 				"optional": "false",
 				"type": "string",
 				"typeRef": "null",
 				"minCardinality": "1",
-				"maxCardinality": "1"
+				"maxCardinality": "1",
+				"comment": "multiline comment"
 			},{
 				"name": "type",
 				"optional": "true",
 				"type": "enum",
 				"typeRef": "null",
 				"minCardinality": "1",
-				"maxCardinality": "1"
+				"maxCardinality": "1",
+				"comment": ""
 			}]
 		}
 	},{
 		"object": {
 			"name": "AddressBook",
+			"comment": "This is a comment for the addressBook message",
 			"fields": [{
 				"name": "people",
 				"optional": "false",
 				"type": "object",
 				"typeRef": "Person",
 				"minCardinality": "0",
-				"maxCardinality": "*"
+				"maxCardinality": "*",
+				"comment": "This is a comment for the people property"
 			}]
 		}
 	},{
 		"enum": {
 			"name": "PhoneType",
+			"comment": "This is a comment for the phoneType enum",
 			"values": ["mobile","home","work"]
 		}
 	}]

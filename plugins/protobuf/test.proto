@@ -1,19 +1,33 @@
 syntax = "proto2";
 
 option go_package = ".;test";
+/* SearchRequest represents a search query, with pagination options to
+ * indicate which results to include in the response.
+ * And an extra line. */
 
+
+//This is a comment for the person message
 message Person {
+  //This is a comment for the name property
   required string name = 1;
+  //
   required int32 id = 2;
+  //This is a comment for the email property
   optional string email = 3;
 
+  //This is a comment for the phoneType enum
   enum PhoneType {
     mobile = 0;
+    //multiline
+    //comment
     home = 1;
     work = 2;
   }
 
+  //This is a comment for the phoneNumber message
   message PhoneNumber {
+    //multiline
+    //comment
     required string number = 1;
     optional PhoneType type = 2 [default = home];
   }
@@ -21,6 +35,8 @@ message Person {
   repeated PhoneNumber phones = 4;
 }
 
+//This is a comment for the addressBook message
 message AddressBook {
+  //This is a comment for the people property
   repeated Person people = 1;
 }

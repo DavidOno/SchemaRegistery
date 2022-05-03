@@ -20,12 +20,15 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+//This is a comment for the phoneType enum
 type Person_PhoneType int32
 
 const (
 	Person_mobile Person_PhoneType = 0
-	Person_home   Person_PhoneType = 1
-	Person_work   Person_PhoneType = 2
+	//multiline
+	//comment
+	Person_home Person_PhoneType = 1
+	Person_work Person_PhoneType = 2
 )
 
 // Enum value maps for Person_PhoneType.
@@ -79,13 +82,17 @@ func (Person_PhoneType) EnumDescriptor() ([]byte, []int) {
 	return file_test_proto_rawDescGZIP(), []int{0, 0}
 }
 
+//This is a comment for the person message
 type Person struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Name   *string               `protobuf:"bytes,1,req,name=name" json:"name,omitempty"`
-	Id     *int32                `protobuf:"varint,2,req,name=id" json:"id,omitempty"`
+	//This is a comment for the name property
+	Name *string `protobuf:"bytes,1,req,name=name" json:"name,omitempty"`
+	//
+	Id *int32 `protobuf:"varint,2,req,name=id" json:"id,omitempty"`
+	//This is a comment for the email property
 	Email  *string               `protobuf:"bytes,3,opt,name=email" json:"email,omitempty"`
 	Phones []*Person_PhoneNumber `protobuf:"bytes,4,rep,name=phones" json:"phones,omitempty"`
 }
@@ -150,11 +157,13 @@ func (x *Person) GetPhones() []*Person_PhoneNumber {
 	return nil
 }
 
+//This is a comment for the addressBook message
 type AddressBook struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
+	//This is a comment for the people property
 	People []*Person `protobuf:"bytes,1,rep,name=people" json:"people,omitempty"`
 }
 
@@ -197,11 +206,14 @@ func (x *AddressBook) GetPeople() []*Person {
 	return nil
 }
 
+//This is a comment for the phoneNumber message
 type Person_PhoneNumber struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
+	//multiline
+	//comment
 	Number *string           `protobuf:"bytes,1,req,name=number" json:"number,omitempty"`
 	Type   *Person_PhoneType `protobuf:"varint,2,opt,name=type,enum=Person_PhoneType,def=1" json:"type,omitempty"`
 }
