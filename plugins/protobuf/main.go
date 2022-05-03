@@ -41,8 +41,9 @@ func main() {
 
 		// 1. Initialise a buffer to hold the generated code
 		var buf bytes.Buffer
-		messages := flattenMessages(file)
-		buf = createJSON(file, messages)
+		messages := collectMessages(file)
+		enums := collectEnums(file)
+		buf = createJSON(file, messages, enums)
 
 		// 4. Specify the output filename, in this case test.foo.go
 		filename := file.GeneratedFilenamePrefix + ".json"
@@ -72,7 +73,7 @@ func debug(file *protogen.File) {
 	fmt.Println(file.Enums[0].Desc.Name())
 }
 
-func flattenMessages(file *protogen.File) []*protogen.Message {
+func collectMessages(file *protogen.File) []*protogen.Message {
 	var messages []*protogen.Message
 	for _, message := range file.Messages {
 		messages = append(messages, message)
@@ -81,6 +82,19 @@ func flattenMessages(file *protogen.File) []*protogen.Message {
 		}
 	}
 	return messages
+}
+
+func collectEnums(file *protogen.File) []*protogen.Enum {
+	var enums []*protogen.Enum
+	for _, enum := range file.Enums {
+		enums = append(enums, enum)
+	}
+	for _, message := range file.Messages {
+		for _, enum := range message.Enums {
+			enums = append(enums, enum)
+		}
+	}
+	return enums
 }
 
 func getType(kind protoreflect.Kind) string {
@@ -166,14 +180,14 @@ func getMaxCardinality(cardinality protoreflect.Cardinality) string {
 	}
 }
 
-func createJSON(file *protogen.File, messages []*protogen.Message) bytes.Buffer {
-	// debug(file)
+func createJSON(file *protogen.File, messages []*protogen.Message, enums []*protogen.Enum) bytes.Buffer {
 	var buf bytes.Buffer
 	root := JsonObject{}
 	topLevelList := JsonKVList{}
 	schemaName := JsonKV{"name", String{file.GeneratedFilenamePrefix}}
 	arrayOfComponents := JsonArray{}
 	addMessages(messages, &arrayOfComponents)
+	addEnums(enums, &arrayOfComponents)
 	components := JsonKV{"components", arrayOfComponents}
 	topLevelList.JsonElements = append(topLevelList.JsonElements, schemaName, components)
 	root.Elements = append(root.Elements, topLevelList)
@@ -187,7 +201,7 @@ func addMessages(messages []*protogen.Message, arrayOfComponents *JsonArray) {
 		messageProperties := JsonKVList{}
 		messageName := JsonKV{"name", String{string(msg.Desc.Name())}}
 		fieldsArray := JsonArray{}
-		addFields(msg, &fieldsArray)
+		addFieldsForMessage(msg, &fieldsArray)
 		fields := JsonKV{"fields", fieldsArray}
 		messageProperties.JsonElements = append(messageProperties.JsonElements, messageName, fields)
 		messageObject := JsonObject{}
@@ -199,7 +213,24 @@ func addMessages(messages []*protogen.Message, arrayOfComponents *JsonArray) {
 	}
 }
 
-func addFields(msg *protogen.Message, fieldsArray *JsonArray) {
+func addEnums(enums []*protogen.Enum, arrayOfComponents *JsonArray) {
+	for _, enum := range enums {
+		enumProperties := JsonKVList{}
+		enumName := JsonKV{"name", String{string(enum.Desc.Name())}}
+		fieldsArray := JsonArray{}
+		addFieldsForEnum(enum, &fieldsArray)
+		fields := JsonKV{"values", fieldsArray}
+		enumProperties.JsonElements = append(enumProperties.JsonElements, enumName, fields)
+		enumObject := JsonObject{}
+		enumObject.Elements = append(enumObject.Elements, enumProperties)
+		enum := JsonKV{"enum", enumObject}
+		enumWrapperObj := JsonObject{}
+		enumWrapperObj.Elements = append(enumWrapperObj.Elements, enum)
+		arrayOfComponents.Objects = append(arrayOfComponents.Objects, enumWrapperObj)
+	}
+}
+
+func addFieldsForMessage(msg *protogen.Message, fieldsArray *JsonArray) {
 	for _, field := range msg.Fields {
 		fieldObj := JsonObject{}
 		fieldProperties := JsonKVList{}
@@ -228,5 +259,11 @@ func addFieldProperties(field *protogen.Field, fieldProperties *JsonKVList) {
 			specifiedField.Value = String{string(field.Desc.Name())}
 		}
 		fieldProperties.JsonElements = append(fieldProperties.JsonElements, specifiedField)
+	}
+}
+
+func addFieldsForEnum(enum *protogen.Enum, fieldsArray *JsonArray) {
+	for _, value := range enum.Values {
+		fieldsArray.Objects = append(fieldsArray.Objects, String{string(value.Desc.Name())})
 	}
 }

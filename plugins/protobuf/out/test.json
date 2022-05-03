@@ -64,5 +64,10 @@
 				"maxCardinality": "*"
 			}]
 		}
+	},{
+		"enum": {
+			"name": "PhoneType",
+			"values": ["mobile","home","work"]
+		}
 	}]
 }
