@@ -27,7 +27,7 @@
 			},{
 				"name": "phones",
 				"optional": "false",
-				"type": "not supported",
+				"type": "object",
 				"typeRef": "phones",
 				"minCardinality": "0",
 				"maxCardinality": "*"
@@ -58,7 +58,7 @@
 			"fields": [{
 				"name": "people",
 				"optional": "false",
-				"type": "not supported",
+				"type": "object",
 				"typeRef": "people",
 				"minCardinality": "0",
 				"maxCardinality": "*"

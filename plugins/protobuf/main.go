@@ -132,7 +132,7 @@ func getType(kind protoreflect.Kind) string {
 	case protoreflect.BytesKind:
 		return "byte"
 	case protoreflect.MessageKind:
-		return "not supported"
+		return "object"
 	case protoreflect.GroupKind:
 		return "not supported"
 	default:
