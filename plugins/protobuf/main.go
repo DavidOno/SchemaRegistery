@@ -236,26 +236,30 @@ func addFields(msg *protogen.Message, fieldsArray *JsonArray) {
 	for _, field := range msg.Fields {
 		fieldObj := JsonObject{}
 		fieldProperties := JsonKVList{}
-		for i := 0; i < len(specifiedFields); i++ {
-			specifiedField := JsonKV{}
-			specifiedField.Name = specifiedFields[i]
-			switch i {
-			case 0:
-				specifiedField.Value = String{string(field.Desc.Name())}
-			case 1:
-				specifiedField.Value = String{getIfOptional(field.Desc.Cardinality())}
-			case 2:
-				specifiedField.Value = String{getType(field.Desc.Kind())}
-			case 4:
-				specifiedField.Value = String{getMinCardinality(field.Desc.Cardinality())}
-			case 5:
-				specifiedField.Value = String{getMaxCardinality(field.Desc.Cardinality())}
-			default:
-				specifiedField.Value = String{string(field.Desc.Name())}
-			}
-			fieldProperties.JsonElements = append(fieldProperties.JsonElements, specifiedField)
-		}
+		addFieldProperties(field, &fieldProperties)
 		fieldObj.Elements = append(fieldObj.Elements, fieldProperties)
 		fieldsArray.Objects = append(fieldsArray.Objects, fieldObj)
+	}
+}
+
+func addFieldProperties(field *protogen.Field, fieldProperties *JsonKVList) {
+	for i := 0; i < len(specifiedFields); i++ {
+		specifiedField := JsonKV{}
+		specifiedField.Name = specifiedFields[i]
+		switch i {
+		case 0:
+			specifiedField.Value = String{string(field.Desc.Name())}
+		case 1:
+			specifiedField.Value = String{getIfOptional(field.Desc.Cardinality())}
+		case 2:
+			specifiedField.Value = String{getType(field.Desc.Kind())}
+		case 4:
+			specifiedField.Value = String{getMinCardinality(field.Desc.Cardinality())}
+		case 5:
+			specifiedField.Value = String{getMaxCardinality(field.Desc.Cardinality())}
+		default:
+			specifiedField.Value = String{string(field.Desc.Name())}
+		}
+		fieldProperties.JsonElements = append(fieldProperties.JsonElements, specifiedField)
 	}
 }
