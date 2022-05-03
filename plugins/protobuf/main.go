@@ -138,7 +138,19 @@ func getType(kind protoreflect.Kind) string {
 	default:
 		return "Error: unknown type of field"
 	}
+}
 
+func getTypeRef(field protogen.Field) string {
+	switch field.Desc.Kind() {
+	case protoreflect.MessageKind:
+		return resolveReference(field)
+	default:
+		return "null"
+	}
+}
+
+func resolveReference(field protogen.Field) string {
+	return string(field.Desc.Message().FullName())
 }
 
 func getIfOptional(cardinality protoreflect.Cardinality) string {
@@ -251,6 +263,8 @@ func addFieldProperties(field *protogen.Field, fieldProperties *JsonKVList) {
 			specifiedField.Value = String{getIfOptional(field.Desc.Cardinality())}
 		case 2:
 			specifiedField.Value = String{getType(field.Desc.Kind())}
+		case 3:
+			specifiedField.Value = String{getTypeRef(*field)}
 		case 4:
 			specifiedField.Value = String{getMinCardinality(field.Desc.Cardinality())}
 		case 5:

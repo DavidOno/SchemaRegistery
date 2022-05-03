@@ -7,28 +7,28 @@
 				"name": "name",
 				"optional": "false",
 				"type": "string",
-				"typeRef": "name",
+				"typeRef": "null",
 				"minCardinality": "1",
 				"maxCardinality": "1"
 			},{
 				"name": "id",
 				"optional": "false",
 				"type": "int32",
-				"typeRef": "id",
+				"typeRef": "null",
 				"minCardinality": "1",
 				"maxCardinality": "1"
 			},{
 				"name": "email",
 				"optional": "true",
 				"type": "string",
-				"typeRef": "email",
+				"typeRef": "null",
 				"minCardinality": "1",
 				"maxCardinality": "1"
 			},{
 				"name": "phones",
 				"optional": "false",
 				"type": "object",
-				"typeRef": "phones",
+				"typeRef": "Person.PhoneNumber",
 				"minCardinality": "0",
 				"maxCardinality": "*"
 			}]
@@ -40,14 +40,14 @@
 				"name": "number",
 				"optional": "false",
 				"type": "string",
-				"typeRef": "number",
+				"typeRef": "null",
 				"minCardinality": "1",
 				"maxCardinality": "1"
 			},{
 				"name": "type",
 				"optional": "true",
 				"type": "enum",
-				"typeRef": "type",
+				"typeRef": "null",
 				"minCardinality": "1",
 				"maxCardinality": "1"
 			}]
@@ -59,7 +59,7 @@
 				"name": "people",
 				"optional": "false",
 				"type": "object",
-				"typeRef": "people",
+				"typeRef": "Person",
 				"minCardinality": "0",
 				"maxCardinality": "*"
 			}]
