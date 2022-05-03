@@ -173,6 +173,32 @@ func getIfOptional(cardinality protoreflect.Cardinality) string {
 	}
 }
 
+func getMinCardinality(cardinality protoreflect.Cardinality) string {
+	switch cardinality {
+	case protoreflect.Optional:
+		return "1"
+	case protoreflect.Required:
+		return "1"
+	case protoreflect.Repeated:
+		return "0" // appears zero(emptyList) or more times
+	default:
+		return "Error: unknown min cardinality"
+	}
+}
+
+func getMaxCardinality(cardinality protoreflect.Cardinality) string {
+	switch cardinality {
+	case protoreflect.Optional:
+		return "1"
+	case protoreflect.Required:
+		return "1"
+	case protoreflect.Repeated:
+		return "*" // appears zero(emptyList) or more times
+	default:
+		return "Error: unknown max cardinality"
+	}
+}
+
 func createJSON(file *protogen.File, messages []*protogen.Message) bytes.Buffer {
 	// debug(file)
 	var buf bytes.Buffer
@@ -197,6 +223,10 @@ func createJSON(file *protogen.File, messages []*protogen.Message) bytes.Buffer 
 					specifiedField.Value = String{getIfOptional(field.Desc.Cardinality())}
 				case 2:
 					specifiedField.Value = String{getType(field.Desc.Kind())}
+				case 4:
+					specifiedField.Value = String{getMinCardinality(field.Desc.Cardinality())}
+				case 5:
+					specifiedField.Value = String{getMaxCardinality(field.Desc.Cardinality())}
 				default:
 					specifiedField.Value = String{string(field.Desc.Name())}
 				}

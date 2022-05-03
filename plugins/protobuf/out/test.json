@@ -8,29 +8,29 @@
 				"optional": "false",
 				"type": "string",
 				"typeRef": "name",
-				"minCardinality": "name",
-				"maxCardinality": "name"
+				"minCardinality": "1",
+				"maxCardinality": "1"
 			},{
 				"name": "id",
 				"optional": "false",
 				"type": "int32",
 				"typeRef": "id",
-				"minCardinality": "id",
-				"maxCardinality": "id"
+				"minCardinality": "1",
+				"maxCardinality": "1"
 			},{
 				"name": "email",
 				"optional": "true",
 				"type": "string",
 				"typeRef": "email",
-				"minCardinality": "email",
-				"maxCardinality": "email"
+				"minCardinality": "1",
+				"maxCardinality": "1"
 			},{
 				"name": "phones",
 				"optional": "false",
 				"type": "not supported",
 				"typeRef": "phones",
-				"minCardinality": "phones",
-				"maxCardinality": "phones"
+				"minCardinality": "0",
+				"maxCardinality": "*"
 			}]
 		}
 	},{
@@ -41,15 +41,15 @@
 				"optional": "false",
 				"type": "string",
 				"typeRef": "number",
-				"minCardinality": "number",
-				"maxCardinality": "number"
+				"minCardinality": "1",
+				"maxCardinality": "1"
 			},{
 				"name": "type",
 				"optional": "true",
 				"type": "enum",
 				"typeRef": "type",
-				"minCardinality": "type",
-				"maxCardinality": "type"
+				"minCardinality": "1",
+				"maxCardinality": "1"
 			}]
 		}
 	},{
@@ -60,8 +60,8 @@
 				"optional": "false",
 				"type": "not supported",
 				"typeRef": "people",
-				"minCardinality": "people",
-				"maxCardinality": "people"
+				"minCardinality": "0",
+				"maxCardinality": "*"
 			}]
 		}
 	}]
