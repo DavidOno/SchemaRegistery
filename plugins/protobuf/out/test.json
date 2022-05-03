@@ -2,11 +2,67 @@
 	"name": "test",
 	"components": [{
 		"object": {
-			"name": "Person"
+			"name": "Person",
+			"fields": [{
+				"name": "name",
+				"optional": "name",
+				"type": "name",
+				"typeRef": "name",
+				"minCardinality": "name",
+				"maxCardinality": "name"
+			},{
+				"name": "id",
+				"optional": "id",
+				"type": "id",
+				"typeRef": "id",
+				"minCardinality": "id",
+				"maxCardinality": "id"
+			},{
+				"name": "email",
+				"optional": "email",
+				"type": "email",
+				"typeRef": "email",
+				"minCardinality": "email",
+				"maxCardinality": "email"
+			},{
+				"name": "phones",
+				"optional": "phones",
+				"type": "phones",
+				"typeRef": "phones",
+				"minCardinality": "phones",
+				"maxCardinality": "phones"
+			}]
 		}
 	},{
 		"object": {
-			"name": "AddressBook"
+			"name": "PhoneNumber",
+			"fields": [{
+				"name": "number",
+				"optional": "number",
+				"type": "number",
+				"typeRef": "number",
+				"minCardinality": "number",
+				"maxCardinality": "number"
+			},{
+				"name": "type",
+				"optional": "type",
+				"type": "type",
+				"typeRef": "type",
+				"minCardinality": "type",
+				"maxCardinality": "type"
+			}]
+		}
+	},{
+		"object": {
+			"name": "AddressBook",
+			"fields": [{
+				"name": "people",
+				"optional": "people",
+				"type": "people",
+				"typeRef": "people",
+				"minCardinality": "people",
+				"maxCardinality": "people"
+			}]
 		}
 	}]
 }
