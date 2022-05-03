@@ -84,39 +84,92 @@ func flattenMessages(file *protogen.File) []*protogen.Message {
 }
 
 func getType(kind protoreflect.Kind) string {
+	// switch kind {
+	// case 1:
+	// 	return "double"
+	// case 2:
+	// 	return "float"
+	// case 3:
+	// 	return "int64"
+	// case 4:
+	// 	return "uint64"
+	// case 5:
+	// 	return "int32"
+	// case 6:
+	// 	return "fixed64"
+	// case 7:
+	// 	return "fixed32"
+	// case 8:
+	// 	return "boolean"
+	// case 9:
+	// 	return "string"
+	// case 12:
+	// 	return "byte"
+	// case 13:
+	// 	return "uint32"
+	// case 14:
+	// 	return "enum"
+	// case 15:
+	// 	return "fixed32"
+	// case 16:
+	// 	return "fixed64"
+	// case 17:
+	// 	return "int32"
+	// default:
+	// 	return "unknown type - this should not happen"
 	switch kind {
-	case 1:
-		return "double"
-	case 2:
-		return "float"
-	case 3:
-		return "int64"
-	case 4:
-		return "uint64"
-	case 5:
-		return "int32"
-	case 6:
-		return "fixed64"
-	case 7:
-		return "fixed32"
-	case 8:
+	case protoreflect.BoolKind:
 		return "boolean"
-	case 9:
-		return "string"
-	case 12:
-		return "byte"
-	case 13:
-		return "uint32"
-	case 14:
+	case protoreflect.EnumKind:
 		return "enum"
-	case 15:
-		return "fixed32"
-	case 16:
-		return "fixed64"
-	case 17:
+	case protoreflect.Int32Kind:
 		return "int32"
+	case protoreflect.Sint32Kind:
+		return "int32"
+	case protoreflect.Uint32Kind:
+		return "uint32"
+	case protoreflect.Int64Kind:
+		return "int64"
+	case protoreflect.Sint64Kind:
+		return "int64"
+	case protoreflect.Uint64Kind:
+		return "uint64"
+	case protoreflect.Sfixed32Kind:
+		return "fixed32"
+	case protoreflect.Fixed32Kind:
+		return "fixed32"
+	case protoreflect.FloatKind:
+		return "float"
+	case protoreflect.Sfixed64Kind:
+		return "fixed64"
+	case protoreflect.Fixed64Kind:
+		return "fixed64"
+	case protoreflect.DoubleKind:
+		return "double"
+	case protoreflect.StringKind:
+		return "string"
+	case protoreflect.BytesKind:
+		return "byte"
+	case protoreflect.MessageKind:
+		return "not supported"
+	case protoreflect.GroupKind:
+		return "not supported"
 	default:
-		return "unknown type - this should not happen"
+		return "Error: unknown type of field"
+	}
+
+}
+
+func getIfOptional(cardinality protoreflect.Cardinality) string {
+	switch cardinality {
+	case protoreflect.Optional:
+		return "true"
+	case protoreflect.Required:
+		return "false"
+	case protoreflect.Repeated:
+		return "false" // appears zero(emptyList) or more times
+	default:
+		return "Error: unknown if optional, required or repated"
 	}
 }
 
@@ -141,7 +194,7 @@ func createJSON(file *protogen.File, messages []*protogen.Message) bytes.Buffer 
 				case 0:
 					specifiedField.Value = String{string(field.Desc.Name())}
 				case 1:
-					specifiedField.Value = String{string(field.Desc.Name())}
+					specifiedField.Value = String{getIfOptional(field.Desc.Cardinality())}
 				case 2:
 					specifiedField.Value = String{getType(field.Desc.Kind())}
 				default:
