@@ -14,18 +14,33 @@ import (
 )
 
 var jsonDoc string = ""
+
+const name string = "name"
+const optional string = "optional"
+const typeOfValue string = "type"
+const typeRef string = "typeRef"
+const minCardinality string = "minCardinality"
+const maxCardinality string = "maxCardinality"
+const comment string = "comment"
+const schemaSpec string = "schemaSpec"
+const components string = "components"
+const fields string = "fields"
+const object string = "object"
+const values string = "values"
+const enumuration string = "enum"
+
 var specifiedFieldsForMessages = map[int]string{
-	0: "name",
-	1: "optional",
-	2: "type",
-	3: "typeRef",
-	4: "minCardinality",
-	5: "maxCardinality",
-	6: "comment"}
+	0: name,
+	1: optional,
+	2: typeOfValue,
+	3: typeRef,
+	4: minCardinality,
+	5: maxCardinality,
+	6: comment}
 
 var specifiedFieldsForEnums = map[int]string{
-	0: "name",
-	1: "comment"}
+	0: name,
+	1: comment}
 
 func main() {
 	input, _ := ioutil.ReadAll(os.Stdin)
@@ -178,13 +193,13 @@ func createJSON(file *protogen.File, messages []*protogen.Message, enums []*prot
 	var buf bytes.Buffer
 	root := JsonObject{}
 	topLevelList := JsonKVList{}
-	schemaName := JsonKV{"name", String{file.GeneratedFilenamePrefix}}
-	schemaSpecification := JsonKV{"schemaSpec", String{file.Desc.Syntax().String()}}
-	comment := JsonKV{"comment", String{findTopLevelComment(file)}}
+	schemaName := JsonKV{name, String{file.GeneratedFilenamePrefix}}
+	schemaSpecification := JsonKV{schemaSpec, String{file.Desc.Syntax().String()}}
+	comment := JsonKV{comment, String{findTopLevelComment(file)}}
 	arrayOfComponents := JsonArray{}
 	addMessages(messages, &arrayOfComponents)
 	addEnums(enums, &arrayOfComponents)
-	components := JsonKV{"components", arrayOfComponents}
+	components := JsonKV{components, arrayOfComponents}
 	topLevelList.JsonElements = append(topLevelList.JsonElements, schemaName, schemaSpecification, comment, components)
 	root.Elements = append(root.Elements, topLevelList)
 	root.Append(0)
@@ -195,15 +210,15 @@ func createJSON(file *protogen.File, messages []*protogen.Message, enums []*prot
 func addMessages(messages []*protogen.Message, arrayOfComponents *JsonArray) {
 	for _, msg := range messages {
 		messageProperties := JsonKVList{}
-		messageName := JsonKV{"name", String{string(msg.Desc.Name())}}
-		comment := JsonKV{"comment", String{extractCommentForMessage(msg)}}
+		messageName := JsonKV{name, String{string(msg.Desc.Name())}}
+		comment := JsonKV{comment, String{extractCommentForMessage(msg)}}
 		fieldsArray := JsonArray{}
 		addFieldsForMessage(msg, &fieldsArray)
-		fields := JsonKV{"fields", fieldsArray}
+		fields := JsonKV{fields, fieldsArray}
 		messageProperties.JsonElements = append(messageProperties.JsonElements, messageName, comment, fields)
 		messageObject := JsonObject{}
 		messageObject.Elements = append(messageObject.Elements, messageProperties)
-		message := JsonKV{"object", messageObject}
+		message := JsonKV{object, messageObject}
 		messageWrapperObj := JsonObject{}
 		messageWrapperObj.Elements = append(messageWrapperObj.Elements, message)
 		arrayOfComponents.Objects = append(arrayOfComponents.Objects, messageWrapperObj)
@@ -213,17 +228,17 @@ func addMessages(messages []*protogen.Message, arrayOfComponents *JsonArray) {
 func addEnums(enums []*protogen.Enum, arrayOfComponents *JsonArray) {
 	for _, enum := range enums {
 		enumProperties := JsonKVList{}
-		enumName := JsonKV{"name", String{string(enum.Desc.Name())}}
-		comment := JsonKV{"comment", String{extractCommentForEnum(enum)}}
+		enumName := JsonKV{name, String{string(enum.Desc.Name())}}
+		comment := JsonKV{comment, String{extractCommentForEnum(enum)}}
 		fieldsArray := JsonArray{}
 		addFieldsForEnum(enum, &fieldsArray)
-		fields := JsonKV{"values", fieldsArray}
+		fields := JsonKV{values, fieldsArray}
 		enumProperties.JsonElements = append(enumProperties.JsonElements, enumName, comment, fields)
 		enumObject := JsonObject{}
 		enumObject.Elements = append(enumObject.Elements, enumProperties)
-		enum := JsonKV{"enum", enumObject}
+		enumKeyValue := JsonKV{enumuration, enumObject}
 		enumWrapperObj := JsonObject{}
-		enumWrapperObj.Elements = append(enumWrapperObj.Elements, enum)
+		enumWrapperObj.Elements = append(enumWrapperObj.Elements, enumKeyValue)
 		arrayOfComponents.Objects = append(arrayOfComponents.Objects, enumWrapperObj)
 	}
 }
