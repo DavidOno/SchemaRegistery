@@ -24,52 +24,31 @@ var specifiedFields = map[int]string{
 	6: "comment"}
 
 func main() {
-	// Protoc passes pluginpb.CodeGeneratorRequest in via stdin
-	// marshalled with Protobuf
 	input, _ := ioutil.ReadAll(os.Stdin)
 	var req pluginpb.CodeGeneratorRequest
 	proto.Unmarshal(input, &req)
-	// Initialise our plugin with default options
 	opts := protogen.Options{}
 	plugin, err := opts.New(&req)
 	if err != nil {
 		panic(err)
 	}
-
-	// Protoc passes a slice of File structs for us to process
 	for _, file := range plugin.Files {
-
-		// Time to generate code...!
-
-		// 1. Initialise a buffer to hold the generated code
 		var buf bytes.Buffer
 		messages := collectMessages(file)
 		enums := collectEnums(file)
 		buf = createJSON(file, messages, enums)
-
-		// 4. Specify the output filename, in this case test.foo.go
 		filename := file.GeneratedFilenamePrefix + ".json"
 		file := plugin.NewGeneratedFile(filename, ".")
-
-		// 5. Pass the data from our buffer to the plugin file struct
 		file.Write(buf.Bytes())
 	}
 
-	// Generate a response from our plugin and marshall as protobuf
 	stdout := plugin.Response()
 	out, err := proto.Marshal(stdout)
 	if err != nil {
 		panic(err)
 	}
 
-	// Write the response to stdout, to be picked up by protoc
 	fmt.Fprintf(os.Stdout, string(out))
-}
-
-func debug(file *protogen.File) {
-	fmt.Println("DEBUG: ")
-	fmt.Println(file.Proto.SourceCodeInfo.Location[4].LeadingDetachedComments)
-	fmt.Println("DEBUG_END")
 }
 
 func collectMessages(file *protogen.File) []*protogen.Message {
@@ -192,7 +171,6 @@ func getMaxCardinality(cardinality protoreflect.Cardinality) JsonElement {
 }
 
 func createJSON(file *protogen.File, messages []*protogen.Message, enums []*protogen.Enum) bytes.Buffer {
-	// debug(file)
 	var buf bytes.Buffer
 	root := JsonObject{}
 	topLevelList := JsonKVList{}
