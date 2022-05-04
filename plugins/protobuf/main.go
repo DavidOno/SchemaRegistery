@@ -172,22 +172,22 @@ func getMinCardinality(cardinality protoreflect.Cardinality) JsonElement {
 	case protoreflect.Required:
 		return Null{}
 	case protoreflect.Repeated:
-		return Number{0} // appears zero(emptyList) or more times
+		return String{"0"} // appears zero(emptyList) or more times
 	default:
 		panic("Error: unknown min cardinality")
 	}
 }
 
-func getMaxCardinality(cardinality protoreflect.Cardinality) string {
+func getMaxCardinality(cardinality protoreflect.Cardinality) JsonElement {
 	switch cardinality {
 	case protoreflect.Optional:
-		return "-"
+		return Null{}
 	case protoreflect.Required:
-		return "-"
+		return Null{}
 	case protoreflect.Repeated:
-		return "*" // appears zero(emptyList) or more times
+		return String{"*"} // appears zero(emptyList) or more times
 	default:
-		return "Error: unknown max cardinality"
+		panic("Error: unknown max cardinality")
 	}
 }
 
@@ -272,7 +272,7 @@ func addFieldProperties(field *protogen.Field, fieldProperties *JsonKVList) {
 		case 4:
 			specifiedField.Value = getMinCardinality(field.Desc.Cardinality())
 		case 5:
-			specifiedField.Value = String{getMaxCardinality(field.Desc.Cardinality())}
+			specifiedField.Value = getMaxCardinality(field.Desc.Cardinality())
 		case 6:
 			specifiedField.Value = String{extractCommentForField(field)}
 		default:

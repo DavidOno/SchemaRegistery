@@ -12,7 +12,7 @@
 				"type": "string",
 				"typeRef": "null",
 				"minCardinality": null,
-				"maxCardinality": "-",
+				"maxCardinality": null,
 				"comment": "This is a comment for the name property"
 			},{
 				"name": "id",
@@ -20,7 +20,7 @@
 				"type": "int32",
 				"typeRef": "null",
 				"minCardinality": null,
-				"maxCardinality": "-",
+				"maxCardinality": null,
 				"comment": ""
 			},{
 				"name": "email",
@@ -28,14 +28,14 @@
 				"type": "string",
 				"typeRef": "null",
 				"minCardinality": null,
-				"maxCardinality": "-",
+				"maxCardinality": null,
 				"comment": "This is a comment for the email property"
 			},{
 				"name": "phones",
 				"optional": "false",
 				"type": "object",
 				"typeRef": "Person.PhoneNumber",
-				"minCardinality": 0,
+				"minCardinality": "0",
 				"maxCardinality": "*",
 				"comment": ""
 			}]
@@ -50,7 +50,7 @@
 				"type": "string",
 				"typeRef": "null",
 				"minCardinality": null,
-				"maxCardinality": "-",
+				"maxCardinality": null,
 				"comment": "multiline comment"
 			},{
 				"name": "type",
@@ -58,7 +58,7 @@
 				"type": "enum",
 				"typeRef": "null",
 				"minCardinality": null,
-				"maxCardinality": "-",
+				"maxCardinality": null,
 				"comment": ""
 			}]
 		}
@@ -71,7 +71,7 @@
 				"optional": "false",
 				"type": "object",
 				"typeRef": "Person",
-				"minCardinality": 0,
+				"minCardinality": "0",
 				"maxCardinality": "*",
 				"comment": "This is a comment for the people property"
 			}]
