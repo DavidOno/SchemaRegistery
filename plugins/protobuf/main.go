@@ -14,7 +14,7 @@ import (
 )
 
 var jsonDoc string = ""
-var specifiedFields = map[int]string{
+var specifiedFieldsForMessages = map[int]string{
 	0: "name",
 	1: "optional",
 	2: "type",
@@ -22,6 +22,10 @@ var specifiedFields = map[int]string{
 	4: "minCardinality",
 	5: "maxCardinality",
 	6: "comment"}
+
+var specifiedFieldsForEnums = map[int]string{
+	0: "name",
+	1: "comment"}
 
 func main() {
 	input, _ := ioutil.ReadAll(os.Stdin)
@@ -235,9 +239,9 @@ func addFieldsForMessage(msg *protogen.Message, fieldsArray *JsonArray) {
 }
 
 func addFieldProperties(field *protogen.Field, fieldProperties *JsonKVList) {
-	for i := 0; i < len(specifiedFields); i++ {
+	for i := 0; i < len(specifiedFieldsForMessages); i++ {
 		specifiedField := JsonKV{}
-		specifiedField.Name = specifiedFields[i]
+		specifiedField.Name = specifiedFieldsForMessages[i]
 		switch i {
 		case 0:
 			specifiedField.Value = String{string(field.Desc.Name())}
@@ -264,13 +268,16 @@ func addFieldsForEnum(enum *protogen.Enum, fieldsArray *JsonArray) {
 	for _, value := range enum.Values {
 		valueList := JsonKVList{}
 		valueObj := JsonObject{}
-		for i := 0; i < 2; i++ {
+		for i := 0; i < len(specifiedFieldsForEnums); i++ {
+			keyValuePair := JsonKV{}
+			keyValuePair.Name = specifiedFieldsForEnums[i]
 			switch i {
 			case 0:
-				valueList.JsonElements = append(valueList.JsonElements, JsonKV{"name", String{string(value.Desc.Name())}})
+				keyValuePair.Value = String{string(value.Desc.Name())}
 			case 1:
-				valueList.JsonElements = append(valueList.JsonElements, JsonKV{"comment", String{prepareComment(value.Comments.Leading.String())}})
+				keyValuePair.Value = String{prepareComment(value.Comments.Leading.String())}
 			}
+			valueList.JsonElements = append(valueList.JsonElements, keyValuePair)
 		}
 		valueObj.Elements = append(valueObj.Elements, valueList)
 		fieldsArray.Objects = append(fieldsArray.Objects, valueObj)
