@@ -165,25 +165,25 @@ func getIfOptional(cardinality protoreflect.Cardinality) string {
 	}
 }
 
-func getMinCardinality(cardinality protoreflect.Cardinality) string {
+func getMinCardinality(cardinality protoreflect.Cardinality) JsonElement {
 	switch cardinality {
 	case protoreflect.Optional:
-		return "1"
+		return Null{}
 	case protoreflect.Required:
-		return "1"
+		return Null{}
 	case protoreflect.Repeated:
-		return "0" // appears zero(emptyList) or more times
+		return Number{0} // appears zero(emptyList) or more times
 	default:
-		return "Error: unknown min cardinality"
+		panic("Error: unknown min cardinality")
 	}
 }
 
 func getMaxCardinality(cardinality protoreflect.Cardinality) string {
 	switch cardinality {
 	case protoreflect.Optional:
-		return "1"
+		return "-"
 	case protoreflect.Required:
-		return "1"
+		return "-"
 	case protoreflect.Repeated:
 		return "*" // appears zero(emptyList) or more times
 	default:
@@ -197,12 +197,13 @@ func createJSON(file *protogen.File, messages []*protogen.Message, enums []*prot
 	root := JsonObject{}
 	topLevelList := JsonKVList{}
 	schemaName := JsonKV{"name", String{file.GeneratedFilenamePrefix}}
+	schemaSpecification := JsonKV{"schemaSpec", String{file.Desc.Syntax().String()}}
 	comment := JsonKV{"comment", String{findTopLevelComment(file)}}
 	arrayOfComponents := JsonArray{}
 	addMessages(messages, &arrayOfComponents)
 	addEnums(enums, &arrayOfComponents)
 	components := JsonKV{"components", arrayOfComponents}
-	topLevelList.JsonElements = append(topLevelList.JsonElements, schemaName, comment, components)
+	topLevelList.JsonElements = append(topLevelList.JsonElements, schemaName, schemaSpecification, comment, components)
 	root.Elements = append(root.Elements, topLevelList)
 	root.Append(0)
 	buf.Write([]byte(jsonDoc))
@@ -269,7 +270,7 @@ func addFieldProperties(field *protogen.Field, fieldProperties *JsonKVList) {
 		case 3:
 			specifiedField.Value = String{getTypeRef(*field)}
 		case 4:
-			specifiedField.Value = String{getMinCardinality(field.Desc.Cardinality())}
+			specifiedField.Value = getMinCardinality(field.Desc.Cardinality())
 		case 5:
 			specifiedField.Value = String{getMaxCardinality(field.Desc.Cardinality())}
 		case 6:

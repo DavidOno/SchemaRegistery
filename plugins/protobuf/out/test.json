@@ -1,5 +1,6 @@
 {
 	"name": "test",
+	"schemaSpec": "proto2",
 	"comment": "SearchRequest represents a search query, with pagination options to indicate which results to include in the response. And an extra line.",
 	"components": [{
 		"object": {
@@ -10,31 +11,31 @@
 				"optional": "false",
 				"type": "string",
 				"typeRef": "null",
-				"minCardinality": "1",
-				"maxCardinality": "1",
+				"minCardinality": null,
+				"maxCardinality": "-",
 				"comment": "This is a comment for the name property"
 			},{
 				"name": "id",
 				"optional": "false",
 				"type": "int32",
 				"typeRef": "null",
-				"minCardinality": "1",
-				"maxCardinality": "1",
+				"minCardinality": null,
+				"maxCardinality": "-",
 				"comment": ""
 			},{
 				"name": "email",
 				"optional": "true",
 				"type": "string",
 				"typeRef": "null",
-				"minCardinality": "1",
-				"maxCardinality": "1",
+				"minCardinality": null,
+				"maxCardinality": "-",
 				"comment": "This is a comment for the email property"
 			},{
 				"name": "phones",
 				"optional": "false",
 				"type": "object",
 				"typeRef": "Person.PhoneNumber",
-				"minCardinality": "0",
+				"minCardinality": 0,
 				"maxCardinality": "*",
 				"comment": ""
 			}]
@@ -48,16 +49,16 @@
 				"optional": "false",
 				"type": "string",
 				"typeRef": "null",
-				"minCardinality": "1",
-				"maxCardinality": "1",
+				"minCardinality": null,
+				"maxCardinality": "-",
 				"comment": "multiline comment"
 			},{
 				"name": "type",
 				"optional": "true",
 				"type": "enum",
 				"typeRef": "null",
-				"minCardinality": "1",
-				"maxCardinality": "1",
+				"minCardinality": null,
+				"maxCardinality": "-",
 				"comment": ""
 			}]
 		}
@@ -70,7 +71,7 @@
 				"optional": "false",
 				"type": "object",
 				"typeRef": "Person",
-				"minCardinality": "0",
+				"minCardinality": 0,
 				"maxCardinality": "*",
 				"comment": "This is a comment for the people property"
 			}]
