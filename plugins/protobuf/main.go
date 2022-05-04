@@ -139,12 +139,12 @@ func getType(kind protoreflect.Kind) string {
 	}
 }
 
-func getTypeRef(field protogen.Field) string {
+func getTypeRef(field protogen.Field) JsonElement {
 	switch field.Desc.Kind() {
 	case protoreflect.MessageKind:
-		return resolveReference(field)
+		return String{resolveReference(field)}
 	default:
-		return "null"
+		return Null{}
 	}
 }
 
@@ -268,7 +268,7 @@ func addFieldProperties(field *protogen.Field, fieldProperties *JsonKVList) {
 		case 2:
 			specifiedField.Value = String{getType(field.Desc.Kind())}
 		case 3:
-			specifiedField.Value = String{getTypeRef(*field)}
+			specifiedField.Value = getTypeRef(*field)
 		case 4:
 			specifiedField.Value = getMinCardinality(field.Desc.Cardinality())
 		case 5:

@@ -10,7 +10,7 @@
 				"name": "name",
 				"optional": "false",
 				"type": "string",
-				"typeRef": "null",
+				"typeRef": null,
 				"minCardinality": null,
 				"maxCardinality": null,
 				"comment": "This is a comment for the name property"
@@ -18,7 +18,7 @@
 				"name": "id",
 				"optional": "false",
 				"type": "int32",
-				"typeRef": "null",
+				"typeRef": null,
 				"minCardinality": null,
 				"maxCardinality": null,
 				"comment": ""
@@ -26,7 +26,7 @@
 				"name": "email",
 				"optional": "true",
 				"type": "string",
-				"typeRef": "null",
+				"typeRef": null,
 				"minCardinality": null,
 				"maxCardinality": null,
 				"comment": "This is a comment for the email property"
@@ -48,7 +48,7 @@
 				"name": "number",
 				"optional": "false",
 				"type": "string",
-				"typeRef": "null",
+				"typeRef": null,
 				"minCardinality": null,
 				"maxCardinality": null,
 				"comment": "multiline comment"
@@ -56,7 +56,7 @@
 				"name": "type",
 				"optional": "true",
 				"type": "enum",
-				"typeRef": "null",
+				"typeRef": null,
 				"minCardinality": null,
 				"maxCardinality": null,
 				"comment": ""
