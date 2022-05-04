@@ -8,7 +8,7 @@
 			"comment": "This is a comment for the person message",
 			"fields": [{
 				"name": "name",
-				"optional": "false",
+				"optional": false,
 				"type": "string",
 				"typeRef": null,
 				"minCardinality": null,
@@ -16,7 +16,7 @@
 				"comment": "This is a comment for the name property"
 			},{
 				"name": "id",
-				"optional": "false",
+				"optional": false,
 				"type": "int32",
 				"typeRef": null,
 				"minCardinality": null,
@@ -24,7 +24,7 @@
 				"comment": ""
 			},{
 				"name": "email",
-				"optional": "true",
+				"optional": true,
 				"type": "string",
 				"typeRef": null,
 				"minCardinality": null,
@@ -32,7 +32,7 @@
 				"comment": "This is a comment for the email property"
 			},{
 				"name": "phones",
-				"optional": "false",
+				"optional": false,
 				"type": "object",
 				"typeRef": "Person.PhoneNumber",
 				"minCardinality": "0",
@@ -46,7 +46,7 @@
 			"comment": "This is a comment for the phoneNumber message",
 			"fields": [{
 				"name": "number",
-				"optional": "false",
+				"optional": false,
 				"type": "string",
 				"typeRef": null,
 				"minCardinality": null,
@@ -54,7 +54,7 @@
 				"comment": "multiline comment"
 			},{
 				"name": "type",
-				"optional": "true",
+				"optional": true,
 				"type": "enum",
 				"typeRef": null,
 				"minCardinality": null,
@@ -68,7 +68,7 @@
 			"comment": "This is a comment for the addressBook message",
 			"fields": [{
 				"name": "people",
-				"optional": "false",
+				"optional": false,
 				"type": "object",
 				"typeRef": "Person",
 				"minCardinality": "0",

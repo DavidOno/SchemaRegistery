@@ -152,16 +152,16 @@ func resolveReference(field protogen.Field) string {
 	return string(field.Desc.Message().FullName())
 }
 
-func getIfOptional(cardinality protoreflect.Cardinality) string {
+func getIfOptional(cardinality protoreflect.Cardinality) Boolean {
 	switch cardinality {
 	case protoreflect.Optional:
-		return "true"
+		return Boolean{true}
 	case protoreflect.Required:
-		return "false"
+		return Boolean{false}
 	case protoreflect.Repeated:
-		return "false" // appears zero(emptyList) or more times
+		return Boolean{false} // appears zero(emptyList) or more times
 	default:
-		return "Error: unknown if optional, required or repated"
+		panic("Error: unknown if optional, required or repated")
 	}
 }
 
@@ -264,7 +264,7 @@ func addFieldProperties(field *protogen.Field, fieldProperties *JsonKVList) {
 		case 0:
 			specifiedField.Value = String{string(field.Desc.Name())}
 		case 1:
-			specifiedField.Value = String{getIfOptional(field.Desc.Cardinality())}
+			specifiedField.Value = getIfOptional(field.Desc.Cardinality())
 		case 2:
 			specifiedField.Value = String{getType(field.Desc.Kind())}
 		case 3:

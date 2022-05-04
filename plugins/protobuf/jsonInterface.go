@@ -16,12 +16,12 @@ func (s String) Append(indentationLevel int) {
 	jsonDoc += fmt.Sprintf("\"%s\"", s.Value)
 }
 
-type Boollean struct {
+type Boolean struct {
 	Value bool
 }
 
-func (b Boollean) Append(indentationLevel int) {
-	jsonDoc += fmt.Sprintf("\"%t\"", b.Value)
+func (b Boolean) Append(indentationLevel int) {
+	jsonDoc += fmt.Sprintf("%t", b.Value)
 }
 
 type Number struct {
