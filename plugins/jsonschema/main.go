@@ -50,26 +50,60 @@ func mapComponents() {
 	components := make([]map[string]interface{}, 0)
 
 	props := input["properties"].(map[string]interface{})
-	fmt.Println(props)
 	component := make(map[string]interface{})
-	fmt.Println(len(component))
 	objectType := mapTypeOfObject(component)
-	fmt.Println(len(component))
 	properties := component[objectType].(map[string]interface{})
 	properties["name"] = input["title"]
 	properties["description"] = input["description"]
 	fields := make([]map[string]interface{}, 0)
-	for propKey, propValue := range props {
+	for propKey, propFields := range props {
 		field := make(map[string]interface{})
 		field["name"] = propKey
-		field["type"] = mapType(propValue)
-		field["description"] = getValueFromMap(propValue, "description")
+		field["type"] = mapType(propFields)
+		field["description"] = getValueFromMap(propFields, "description")
 		field["optional"] = mapIfPropertyIsOptional(propKey)
+		field["min"] = getMinProperty(propFields)
 		fields = append(fields, field)
 	}
 	properties["fields"] = fields
 	components = append(components, component)
 	ddm["components"] = components
+}
+
+func getMinProperty(propFields interface{}) string {
+	if isArray(propFields) {
+		return findMinValueDefinitionForArray(propFields)
+	} else {
+		return findMinValueDefinition(propFields)
+	}
+}
+
+func findMinValueDefinitionForArray(propFields interface{}) string {
+	properties := propFields.(map[string]interface{})
+	if value, ok := properties["minItems"]; ok {
+		return fmt.Sprintf("%v", value)
+	}
+	return "0"
+
+}
+
+func findMinValueDefinition(propFields interface{}) string {
+	properties := propFields.(map[string]interface{})
+	if value, ok := properties["exclusiveMinimum"]; ok {
+		return fmt.Sprintf("]%v", value)
+	} else if value, ok := properties["minimum"]; ok {
+		min := value.(int)
+		return fmt.Sprintf("%v", min)
+	}
+	return "null"
+}
+
+func isArray(propFields interface{}) bool {
+	typeOfProperty := getValueFromMap(propFields, "type")
+	if typeOfProperty == "array" {
+		return true
+	}
+	return false
 }
 
 func getValueFromMap(mapping interface{}, keys ...string) interface{} {
