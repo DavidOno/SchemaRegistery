@@ -63,6 +63,7 @@ func mapComponents() {
 		field["description"] = getValueFromMap(propFields, "description")
 		field["optional"] = mapIfPropertyIsOptional(propKey)
 		field["min"] = getMinProperty(propFields)
+		field["max"] = getMaxProperty(propFields)
 		fields = append(fields, field)
 	}
 	properties["fields"] = fields
@@ -70,7 +71,15 @@ func mapComponents() {
 	ddm["components"] = components
 }
 
-func getMinProperty(propFields interface{}) string {
+func getMaxProperty(propFields interface{}) interface{} {
+	if isArray(propFields) {
+		return findMaxValueDefinitionForArray(propFields)
+	} else {
+		return findMaxValueDefinition(propFields)
+	}
+}
+
+func getMinProperty(propFields interface{}) interface{} {
 	if isArray(propFields) {
 		return findMinValueDefinitionForArray(propFields)
 	} else {
@@ -78,16 +87,34 @@ func getMinProperty(propFields interface{}) string {
 	}
 }
 
-func findMinValueDefinitionForArray(propFields interface{}) string {
+func findMaxValueDefinitionForArray(propFields interface{}) interface{} {
+	properties := propFields.(map[string]interface{})
+	if value, ok := properties["maxItems"]; ok {
+		return fmt.Sprintf("%v", value)
+	}
+	return "*"
+}
+
+func findMinValueDefinitionForArray(propFields interface{}) interface{} {
 	properties := propFields.(map[string]interface{})
 	if value, ok := properties["minItems"]; ok {
 		return fmt.Sprintf("%v", value)
 	}
 	return "0"
-
 }
 
-func findMinValueDefinition(propFields interface{}) string {
+func findMaxValueDefinition(propFields interface{}) interface{} {
+	properties := propFields.(map[string]interface{})
+	if value, ok := properties["exclusiveMaximum"]; ok {
+		return fmt.Sprintf("%v[", value)
+	} else if value, ok := properties["maximum"]; ok {
+		max := value.(int)
+		return fmt.Sprintf("%v", max)
+	}
+	return nil
+}
+
+func findMinValueDefinition(propFields interface{}) interface{} {
 	properties := propFields.(map[string]interface{})
 	if value, ok := properties["exclusiveMinimum"]; ok {
 		return fmt.Sprintf("]%v", value)
@@ -95,7 +122,7 @@ func findMinValueDefinition(propFields interface{}) string {
 		min := value.(int)
 		return fmt.Sprintf("%v", min)
 	}
-	return "null"
+	return nil
 }
 
 func isArray(propFields interface{}) bool {
