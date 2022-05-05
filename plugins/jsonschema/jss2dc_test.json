@@ -3,11 +3,32 @@
 		{
 			"object": {
 				"description": "A product from Acme's catalog!!!?#",
-				"fields": {
-					"description": "Tags for the product",
-					"name": "tags",
-					"type": "array"
-				},
+				"fields": [
+					{
+						"description": "The price of the product",
+						"name": "price",
+						"optional": false,
+						"type": "number"
+					},
+					{
+						"description": "Tags for the product",
+						"name": "tags",
+						"optional": true,
+						"type": "array"
+					},
+					{
+						"description": "The unique identifier for a product",
+						"name": "productId",
+						"optional": false,
+						"type": "integer"
+					},
+					{
+						"description": "Name of the product",
+						"name": "productName",
+						"optional": false,
+						"type": "string"
+					}
+				],
 				"name": "Product"
 			}
 		}

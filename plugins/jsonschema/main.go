@@ -55,41 +55,30 @@ func mapComponents() {
 	fmt.Println(len(component))
 	objectType := mapTypeOfObject(component)
 	fmt.Println(len(component))
+	properties := component[objectType].(map[string]interface{})
+	properties["name"] = input["title"]
+	properties["description"] = input["description"]
+	fields := make([]map[string]interface{}, 0)
 	for propKey, propValue := range props {
-		properties := component[objectType].(map[string]interface{})
-		properties["name"] = input["title"]
-		properties["description"] = input["description"]
-		properties["fields"] = make([]map[string]interface{}, 0)
-		fields := properties["fields"].(map[string]interface{})
-		fields["name"] = propKey
-		fields["type"] = propValue.(map[string]interface{})["type"]
-		fields["description"] = propValue.(map[string]interface{})["description"]
-
-		// typeOfValue := reflect.TypeOf(propValue)
-		// fmt.Println(typeOfValue)
-		fmt.Println(propKey)
-		fmt.Println(propValue)
-		// switch typeOfValue.Kind() {
-		// case reflect.Map:
-
-		// if mv, ok := propValue.(MapType); ok {
-		// 	// docMap[propKey] = doc.throughMap(mv)
-		// 	fmt.Println(mv)
-		// } else {
-		// 	panic("error when casting to MapType")
-		// }
-		// case reflect.Array, reflect.Slice:
-		// if mv, ok := propValue.(ArrayType); ok {
-		// 	docMap[propKey] = doc.throughArray(mv)
-		// } else {
-		// 	panic("error when casting to ArrayType")
-		// }
-		// default:
-		// docMap[propKey] = doc.processType(propValue)
-		// }
+		field := make(map[string]interface{})
+		field["name"] = propKey
+		field["type"] = propValue.(map[string]interface{})["type"]
+		field["description"] = propValue.(map[string]interface{})["description"]
+		field["optional"] = mapIfPropertyIsOptional(propKey)
+		fields = append(fields, field)
 	}
+	properties["fields"] = fields
 	components = append(components, component)
 	ddm["components"] = components
+}
+
+func mapIfPropertyIsOptional(propKey string) bool {
+	listOfRequiredProps := input["required"].([]interface{})
+	set := make(map[interface{}]bool)
+	for _, v := range listOfRequiredProps {
+		set[v] = true
+	}
+	return !set[propKey]
 }
 
 func mapTypeOfObject(component map[string]interface{}) string {
