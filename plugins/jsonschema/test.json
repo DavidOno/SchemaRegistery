@@ -24,7 +24,8 @@
 			"items": {
 				"type": "string"
 			},
-			"minItems": 1
+			"minItems": 1,
+			"uniqueItems": true
 		}
 	},
 	"required": ["productId", "productName", "price"]

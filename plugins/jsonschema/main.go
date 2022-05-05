@@ -64,11 +64,18 @@ func mapComponents() {
 		field["optional"] = mapIfPropertyIsOptional(propKey)
 		field["min"] = getMinProperty(propFields)
 		field["max"] = getMaxProperty(propFields)
+		mapUniqueField(propFields, field)
 		fields = append(fields, field)
 	}
 	properties["fields"] = fields
 	components = append(components, component)
 	ddm["components"] = components
+}
+
+func mapUniqueField(propFields interface{}, field map[string]interface{}) {
+	if value, ok := propFields.(map[string]interface{})["uniqueItems"]; ok {
+		field["unique"] = value
+	}
 }
 
 func getMaxProperty(propFields interface{}) interface{} {

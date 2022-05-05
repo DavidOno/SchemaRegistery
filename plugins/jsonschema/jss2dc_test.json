@@ -10,7 +10,8 @@
 						"min": "1",
 						"name": "tags",
 						"optional": true,
-						"type": "string"
+						"type": "string",
+						"unique": true
 					},
 					{
 						"description": "The unique identifier for a product",
