@@ -72,14 +72,18 @@ func mapComponents() {
 	ddm["components"] = components
 }
 
-func getValueFromMap(mapping interface{}, key string) interface{} {
-	return mapping.(map[string]interface{})[key]
+func getValueFromMap(mapping interface{}, keys ...string) interface{} {
+	result := mapping
+	for _, key := range keys {
+		result = result.(map[string]interface{})[key]
+	}
+	return result
 }
 
 func mapType(propValue interface{}) string {
 	typeOfField := getValueFromMap(propValue, "type").(string)
 	if typeOfField == "array" {
-		return getValueFromMap(getValueFromMap(propValue, "items"), "type").(string)
+		return getValueFromMap(propValue, "items", "type").(string)
 	} else {
 		return typeOfField
 	}
