@@ -62,14 +62,27 @@ func mapComponents() {
 	for propKey, propValue := range props {
 		field := make(map[string]interface{})
 		field["name"] = propKey
-		field["type"] = propValue.(map[string]interface{})["type"]
-		field["description"] = propValue.(map[string]interface{})["description"]
+		field["type"] = mapType(propValue)
+		field["description"] = getValueFromMap(propValue, "description")
 		field["optional"] = mapIfPropertyIsOptional(propKey)
 		fields = append(fields, field)
 	}
 	properties["fields"] = fields
 	components = append(components, component)
 	ddm["components"] = components
+}
+
+func getValueFromMap(mapping interface{}, key string) interface{} {
+	return mapping.(map[string]interface{})[key]
+}
+
+func mapType(propValue interface{}) string {
+	typeOfField := getValueFromMap(propValue, "type").(string)
+	if typeOfField == "array" {
+		return getValueFromMap(getValueFromMap(propValue, "items"), "type").(string)
+	} else {
+		return typeOfField
+	}
 }
 
 func mapIfPropertyIsOptional(propKey string) bool {
