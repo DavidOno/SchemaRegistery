@@ -2,17 +2,8 @@
 	"components": [
 		{
 			"object": {
-				"description": "A product from Acme's catalog!!!?#",
+				"description": "A product from Acme's catalog",
 				"fields": [
-					{
-						"description": "Tags for the product",
-						"max": "*",
-						"min": "1",
-						"name": "tags",
-						"optional": true,
-						"type": "string",
-						"unique": true
-					},
 					{
 						"description": "The unique identifier for a product",
 						"max": null,
@@ -36,13 +27,30 @@
 						"name": "price",
 						"optional": false,
 						"type": "number"
+					},
+					{
+						"description": "Tags for the product",
+						"max": "*",
+						"min": "1",
+						"name": "tags",
+						"optional": true,
+						"type": "string",
+						"unique": true
+					},
+					{
+						"description": null,
+						"max": null,
+						"min": null,
+						"name": "dimensions",
+						"optional": true,
+						"type": "object"
 					}
 				],
 				"name": "Product"
 			}
 		}
 	],
-	"description": "A product from Acme's catalog!!!?#",
+	"description": "A product from Acme's catalog",
 	"name": "test",
 	"schemaSpec": "json-schema"
 }

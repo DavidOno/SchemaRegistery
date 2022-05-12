@@ -21,7 +21,7 @@ func main() {
 }
 
 func readFromFile() {
-	file, err := os.ReadFile("./test.json")
+	file, err := os.ReadFile("./test2.json")
 	check(err)
 	json.Unmarshal(file, &input)
 }
