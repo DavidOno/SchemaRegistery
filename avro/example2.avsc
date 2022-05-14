@@ -1,0 +1,5 @@
+{ "type" : "enum",
+  "name" : "Colors",
+  "namespace" : "palette",
+  "doc" : "Colors supported by the palette.",
+  "symbols" : ["WHITE", "BLUE", "GREEN", "RED", "BLACK"]}
